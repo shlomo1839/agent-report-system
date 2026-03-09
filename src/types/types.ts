@@ -1,11 +1,24 @@
+export type UserRole =  'admin' | 'agent';
+
 export interface User {
     id: string;
     agentCode: string;
     fullName: string;
     passwordHash: string;
-    role: 'admin' | 'agent';
+    role: UserRole
     createdAt: Date;
 }
+
+
+export interface AuthPayload {
+    userId: string;
+    agentCode: string;
+    role: UserRole;
+}
+
+
+
+
 
 export interface Report {
     id: string;
@@ -17,4 +30,7 @@ export interface Report {
     sourceType: 'csv';
     createdAt: Date;
 }
+
+
+
 
