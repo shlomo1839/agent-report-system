@@ -1,20 +1,28 @@
-export type UserRole =  'admin' | 'agent';
+export type AgentRole =  'admin' | 'agent';
 
-export interface User {
+export interface Agent {
     id: string;
     agentCode: string;
     fullName: string;
-    passwordHash: string;
-    role: UserRole
-    createdAt: Date;
+    password: string;
+    role: AgentRole;
 }
-
 
 export interface AuthPayload {
     userId: string;
     agentCode: string;
-    role: UserRole;
+    role: AgentRole;
 }
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: AuthPayload;
+    }
+  }
+}
+
+
 
 
 export type ReportCategory = 'intelligence' | 'logistics' | 'alert';
