@@ -17,20 +17,17 @@ export interface AuthPayload {
 }
 
 
-
+export type ReportCategory = 'intelligence' | 'logistics' | 'alert';
+export type ReportUrgency = 'low' | 'medium' | 'high';
 
 
 export interface Report {
     id: string;
     userId: string;
-    category: 'intelligence' | 'logistics' | 'alert';
-    urgency: 'low' | 'medium' | 'high';
+    category: ReportCategory;
+    urgency: ReportUrgency;
     message: string;
     imagePath?: string;
     sourceType: 'csv';
     createdAt: Date;
 }
-
-
-
-
