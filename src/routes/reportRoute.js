@@ -69,5 +69,42 @@ router.post('/report/csv', async (req, res) => {
 });
 
 
-router.get('/filter');
+router.get('/filter', async(req,res)=> {
+    try {
+        const role = req.user.role;
+        if (!role){
+            return res.status(400).json({message: "not aloud"})
+        }
+        let repoert;
+        if(role=== "admin"){
+            repoert = await Report.find();
+        } else {
+            repoert = await Report.find({userId: req.user.id})
+        }
+
+
+        if (req.query.agentCode && role === "admin") {
+            repoert = repoert.filter((r) => r.agentCode === req.query.agentCode)   
+        }
+        if(req.query.urgency) {
+            repoert = repoert.filter((r) => r.urgency === req.query.urgency)
+        }
+        if (req.query.category) {
+            repoert = repoert.filter((r) => r.category === req.query.category)
+        }
+        res.status(200).json(repoert)
+    } catch (error) {
+        res.status(500).json({error})
+    }
+});
+
+
+
+
+
+
+
+
+
+
 router.get('/:id')
