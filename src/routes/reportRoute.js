@@ -100,6 +100,3 @@ router.get('/filter', isAuth, async(req,res)=> {
 });
 
 // router.get('/:id', isAuth)
-
-
-export default router;
