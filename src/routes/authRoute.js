@@ -2,6 +2,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import "dotenv/config";
 import bcrypt from 'bcrypt';
+import { checkAdmin, isAuth } from '../middlewre/authMiddleware';
 
 const router = express.Router();
 // const secret = process.env.secret;
@@ -36,7 +37,7 @@ router.post('/login', async (req, res) => {
 
 
 
-router.get('/me', async (req, res) => {
+router.get('/me', isAuth, async (req, res) => {
     try {
         const dataToken = req.user;
         if (!dataToken) {
@@ -59,8 +60,8 @@ router.get('/me', async (req, res) => {
     }
 });
 
-// this rout only for admin - need to get middleware
-router.post('/signup', async (req, res) => {
+
+router.post('/signup', isAuth, checkAdmin, async (req, res) => {
     try {
         const { fullName, agentCode, password, role } = req.body;
         if (!fullName || !agentCode) {

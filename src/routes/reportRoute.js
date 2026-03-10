@@ -1,11 +1,12 @@
 import express from 'express';
 import {Report} from '../db/reportSchema.js';
 import {parse} from "csv-parse/sync";
+import {checkAdmin, isAuth} from '../middlewre/authMiddleware.js'
 
 const router = express.Router();
 
-// nedd middlewarecfor Agent or admin
-router.post('/report/form', async(req, res) => {
+
+router.post('/report/form', isAuth, async(req, res) => {
     try {
         const {category, urgency, message, sourceType} = req.body;
 
@@ -36,8 +37,8 @@ router.post('/report/form', async(req, res) => {
     }
 });
 
-// nedd middlewarecfor Agent or admin
-router.post('/report/csv', async (req, res) => {
+
+router.post('/report/csv', isAuth, async (req, res) => {
     try {
         if (!req.files && !req.files.file) {
             return res.status(400).json({message: "missing details"})
@@ -69,7 +70,7 @@ router.post('/report/csv', async (req, res) => {
 });
 
 
-router.get('/filter', async(req,res)=> {
+router.get('/filter', isAuth, async(req,res)=> {
     try {
         const role = req.user.role;
         if (!role){
@@ -98,13 +99,7 @@ router.get('/filter', async(req,res)=> {
     }
 });
 
+// router.get('/:id', isAuth)
 
 
-
-
-
-
-
-
-
-router.get('/:id')
+export default router;
