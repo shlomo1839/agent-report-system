@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express';
+import express from 'express';
 import cors from 'cors';
 import authRoute from './routes/authRoute.js';
 
@@ -9,7 +9,7 @@ app.use(cors())
 app.use(express.json())
 app.use('/auth', authRoute)
 
-app.get('/', (req: Request, res: Response) =>{
+app.get('/', (req, res) =>{
     res.json({message: "Welcome to requirements"})
 })
 
