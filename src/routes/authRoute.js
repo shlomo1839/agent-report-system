@@ -36,8 +36,6 @@ router.post('/login', async (req, res) => {
 
 
 
-
-
 router.get('/me', async (req, res) => {
     try {
         const dataToken = req.user;
@@ -58,6 +56,40 @@ router.get('/me', async (req, res) => {
         res.status(200).json(returnUser)
     } catch(err) {
         res.status(500).json({message: err.message})
+    }
+});
+
+// this rout only for admin - need to get middleware
+router.post('/signup', async (req, res) => {
+    try {
+        const { fullName, agentCode, password, role } = req.body;
+        if (!fullName || !agentCode) {
+            return res.status(400).json({message: "enter all fields"})
+        }
+
+        const exsistsUser = await User.findOne({agentCode})
+        if (exsistsUser) {
+            return res.status(400).json({message: "egents with this agent code exsists"})
+        }
+
+        const passwordToHash = role === "agent" ? fullName : password;
+        const passwordHash = await bcrypt.hash(passwordToHash, 10)
+
+        const newUser = new User({
+            fullName,
+            agentCode,
+            passwordHash,
+            role: role ? role : 'agent'
+        })
+        await newUser.save();
+
+        const token = jwt.sign(
+            {id: newUser._id, role: newUser._role},
+            "my-sec-key",
+            res.status(200).json({message: "created user successs", token})
+        )
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 })
 
