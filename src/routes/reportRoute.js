@@ -3,10 +3,10 @@ import {Report} from '../db/reportSchema.js';
 import {parse} from "csv-parse/sync";
 import {checkAdmin, isAuth} from '../middlewre/authMiddleware.js'
 
-const router = express.Router();
+const reportRouter = express.Router();
 
 
-router.post('/report/form', isAuth, async(req, res) => {
+reportRouter.post('/report/form', isAuth, async(req, res) => {
     try {
         const {category, urgency, message, sourceType} = req.body;
 
@@ -38,7 +38,7 @@ router.post('/report/form', isAuth, async(req, res) => {
 });
 
 
-router.post('/report/csv', isAuth, async (req, res) => {
+reportRouter.post('/report/csv', isAuth, async (req, res) => {
     try {
         if (!req.files && !req.files.file) {
             return res.status(400).json({message: "missing details"})
@@ -70,7 +70,7 @@ router.post('/report/csv', isAuth, async (req, res) => {
 });
 
 
-router.get('/filter', isAuth, async(req,res)=> {
+reportRouter.get('/filter', isAuth, async(req,res)=> {
     try {
         const role = req.user.role;
         if (!role){
@@ -100,3 +100,5 @@ router.get('/filter', isAuth, async(req,res)=> {
 });
 
 // router.get('/:id', isAuth)
+
+export default reportRouter;

@@ -1,4 +1,4 @@
-function atbash(char: string) {
+function atbash(char) {
     const alphabetLowercase = "abcdefghijklmnopqrstuvwxyz"
     const alphabetUppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 

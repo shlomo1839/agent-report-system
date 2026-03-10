@@ -9,7 +9,7 @@ export const checkAdmin = (req, res, next) => {
 
 
 export const isAuth = (req, res, next) => {
-    const authHeader = req.Header.authorization;
+    const authHeader = req.headers.authorization;
     if (!authHeader) {
         return res.status(400).json({message: "auth denied"})
     }

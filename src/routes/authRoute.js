@@ -3,11 +3,12 @@ import jwt from 'jsonwebtoken';
 import "dotenv/config";
 import bcrypt from 'bcrypt';
 import { checkAdmin, isAuth } from '../middlewre/authMiddleware';
+import {User} from '../db/usersSchema';
 
-const router = express.Router();
+const authRouter = express.Router();
 // const secret = process.env.secret;
 
-router.post('/login', async (req, res) => {
+authRouter.post('/login', async (req, res) => {
     try {
         const {agentCode, password} = req.body;
         if (!agentCode || !password) {
@@ -28,7 +29,6 @@ router.post('/login', async (req, res) => {
         "my-ses-key",
         {expiresIn: "1d"}
         );
-        // לבדוק אם צריך להחזיר את פרטי יוזר
         res.status(200).json({message: "login succsess", token})
     } catch (err){
         res.status(500).json({message: err.message})
@@ -37,7 +37,7 @@ router.post('/login', async (req, res) => {
 
 
 
-router.get('/me', isAuth, async (req, res) => {
+authRouter.get('/me', isAuth, async (req, res) => {
     try {
         const dataToken = req.user;
         if (!dataToken) {
@@ -61,7 +61,7 @@ router.get('/me', isAuth, async (req, res) => {
 });
 
 
-router.post('/signup', isAuth, checkAdmin, async (req, res) => {
+authRouter.post('/signup', isAuth, checkAdmin, async (req, res) => {
     try {
         const { fullName, agentCode, password, role } = req.body;
         if (!fullName || !agentCode) {
@@ -87,12 +87,11 @@ router.post('/signup', isAuth, checkAdmin, async (req, res) => {
         const token = jwt.sign(
             {id: newUser._id, role: newUser._role},
             "my-sec-key",
-            res.status(200).json({message: "created user successs", token})
         )
+         res.status(200).json({message: "created user successs", token})
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 })
 
-
-export default router;
+export default authRouter;
