@@ -12,8 +12,7 @@ router.post('/login', async (req, res) => {
         if (!agentCode || !password) {
             return res.status(400).json({message: "agent code or password missing"});
         }
-        // we edd connect to mongo - after
-        // const userToFind = await User...
+        const userToFind = await User.findOne({agentCode})
         if (!userToFind) {
             return res.status(400).json({message: "user not found"})
         }
@@ -22,8 +21,14 @@ router.post('/login', async (req, res) => {
         if(!userFound) {
             return res.status(400).json({ message: "the password dosnt match"})
         }
-        
-        res.status(200).json({message: "login succsess"})
+
+        const token = jwt.sign(
+        {id: user._id, role: user.role},
+        "my-ses-key",
+        {expiresIn: "1d"}
+        );
+        // לבדוק אם צריך להחזיר את פרטי יוזר
+        res.status(200).json({message: "login succsess", token})
     } catch (err){
         res.status(500).json({message: err.message})
     }
@@ -40,10 +45,7 @@ router.get('/me', async (req, res) => {
             return res.status(400).json({message: "token not define"})
         }
 
-        // connect mongo after
-        // const userToFound
-
-        
+        const userToFound = await User.findOne({_id: token.id})
         if (!userToFound) {
             return res.status(400).json({message: "agent not found"})
         }
