@@ -20,7 +20,7 @@ reportRouter.post('/report/form', isAuth, async(req, res) => {
         if (req.files && req.files.image) {
             const image = req.files.image;
             imagePath = "uploads/" + "-" + image.name;
-            await image.mv()
+            await image.mv(`./uploads/${image.name}`)
         }
 
         const report = await Report.create({

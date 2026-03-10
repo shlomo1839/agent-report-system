@@ -2,16 +2,16 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import "dotenv/config";
 import bcrypt from 'bcrypt';
-import { checkAdmin, isAuth } from '../middlewre/authMiddleware';
-import {User} from '../db/usersSchema';
+import { checkAdmin, isAuth } from '../middlewre/authMiddleware.js';
+import {User} from '../db/usersSchema.js';
 
 const authRouter = express.Router();
 // const secret = process.env.secret;
 
 authRouter.post('/login', async (req, res) => {
     try {
-        const {agentCode, password} = req.body;
-        if (!agentCode || !password) {
+        const {agentCode, passwordHash} = req.body;
+        if (!agentCode || !passwordHash) {
             return res.status(400).json({message: "agent code or password missing"});
         }
         const userToFind = await User.findOne({agentCode})
@@ -19,14 +19,14 @@ authRouter.post('/login', async (req, res) => {
             return res.status(400).json({message: "user not found"})
         }
 
-        const userFound = await bcrypt.compare(password, user.passwordHash)
+        const userFound = await bcrypt.compare(password, userToFind.passwordHash)
         if(!userFound) {
             return res.status(400).json({ message: "the password dosnt match"})
         }
 
         const token = jwt.sign(
-        {id: user._id, role: user.role},
-        "my-ses-key",
+        {id: userToFind._id, role: userToFind.role},
+        jwt_secret,
         {expiresIn: "1d"}
         );
         res.status(200).json({message: "login succsess", token})
@@ -44,12 +44,12 @@ authRouter.get('/me', isAuth, async (req, res) => {
             return res.status(400).json({message: "token not define"})
         }
 
-        const userToFound = await User.findOne({_id: token.id})
+        const userToFound = await User.findOne({_id: dataToken.id})
         if (!userToFound) {
             return res.status(400).json({message: "agent not found"})
         }
         const returnUser = {
-            id: userToFound.Id,
+            id: userToFound.id,
             agentCode: userToFound.agentCode,
             fullName: userToFound.fullName,
             role: userToFound.role
@@ -61,7 +61,7 @@ authRouter.get('/me', isAuth, async (req, res) => {
 });
 
 
-authRouter.post('/signup', isAuth, checkAdmin, async (req, res) => {
+authRouter.post('/signup', async (req, res) => {
     try {
         const { fullName, agentCode, password, role } = req.body;
         if (!fullName || !agentCode) {
@@ -86,7 +86,7 @@ authRouter.post('/signup', isAuth, checkAdmin, async (req, res) => {
 
         const token = jwt.sign(
             {id: newUser._id, role: newUser._role},
-            "my-sec-key",
+            jwt_secret,
         )
          res.status(200).json({message: "created user successs", token})
     } catch (error) {

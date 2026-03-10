@@ -15,7 +15,7 @@ export const isAuth = (req, res, next) => {
     }
     const token = authHeader.split(" ")[1];   //remove spases - bearer
     try {
-        const decoded = jwt.verify(token, "sec-key")
+        const decoded = jwt.verify(token, jwt_secret)
         req.user = decoded;
         next();
     } catch (error){

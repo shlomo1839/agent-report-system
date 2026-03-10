@@ -1,6 +1,6 @@
 import express from 'express';
-import { isAuth, checkAdmin } from '../middlewre/authMiddleware';
-import { User } from '../db/usersSchema';
+import { isAuth, checkAdmin } from '../middlewre/authMiddleware.js';
+import { User } from '../db/usersSchema.js';
 
 const usersRouter = express.Router();
 

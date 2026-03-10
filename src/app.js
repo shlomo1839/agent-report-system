@@ -5,6 +5,8 @@ import authRouter from './routes/authRoute.js';
 import reportRouter from './routes/reportRoute.js';
 import usersRouter from './routes/usersRoute.js';
 import fileUpload from "express-fileupload";
+import dotenv from "dotenv";
+dotenv.config()
 
 const app = express();
 const port = process.env.port || 8000;
